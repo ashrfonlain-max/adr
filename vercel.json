@@ -1,18 +1,23 @@
-{
-  "version": 2,
-  "builds": [
-    {
-      "src": "web_app.py",
-      "use": "@vercel/python"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "web_app.py"
-    }
-  ]
-}
+from flask import Flask, request
+
+app = Flask(__name__)
+
+@app.route("/", methods=["GET"])
+def home():
+    return "مرحباً بك في تطبيق ADR Electronics على Vercel!"
+
+@app.route("/about", methods=["GET"])
+def about():
+    return "هذا مثال لمسار إضافي يعمل عبر Flask."
+
+@app.route("/echo", methods=["POST"])
+def echo():
+    data = request.json
+    return {"received": data}, 200
+
+# نقطة الدخول الرئيسية
+if __name__ == "__main__":
+    app.run()
 
 
 
