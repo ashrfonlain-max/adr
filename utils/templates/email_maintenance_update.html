@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحديث حالة الصيانة - {{ tracking_code }}</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            direction: rtl;
+            text-align: right;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #1976d2, #42a5f5);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 30px;
+        }
+        .status-box {
+            background-color: #e8f5e8;
+            border: 2px solid #4caf50;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .status-box h2 {
+            color: #2e7d32;
+            margin: 0 0 10px 0;
+        }
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .info-table td {
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .info-table td:first-child {
+            font-weight: bold;
+            color: #424242;
+            width: 30%;
+        }
+        .footer {
+            background-color: #f5f5f5;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+        }
+        .button {
+            display: inline-block;
+            background-color: #1976d2;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 ADR ELECTRONICS</h1>
+            <p>تحديث حالة طلب الصيانة</p>
+        </div>
+        
+        <div class="content">
+            <div class="status-box">
+                <h2>✅ {{ status_message }}</h2>
+                <p>رقم التتبع: <strong>{{ tracking_code }}</strong></p>
+            </div>
+            
+            <table class="info-table">
+                <tr>
+                    <td>اسم العميل:</td>
+                    <td>{{ customer_name }}</td>
+                </tr>
+                <tr>
+                    <td>رقم الهاتف:</td>
+                    <td>{{ customer_phone }}</td>
+                </tr>
+                <tr>
+                    <td>نوع الجهاز:</td>
+                    <td>{{ device_type }}</td>
+                </tr>
+                {% if device_model %}
+                <tr>
+                    <td>موديل الجهاز:</td>
+                    <td>{{ device_model }}</td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <td>تاريخ الاستلام:</td>
+                    <td>{{ received_date }}</td>
+                </tr>
+                {% if completion_date %}
+                <tr>
+                    <td>تاريخ الإكمال:</td>
+                    <td>{{ completion_date }}</td>
+                </tr>
+                {% endif %}
+                {% if cost %}
+                <tr>
+                    <td>التكلفة:</td>
+                    <td>{{ cost }} {{ currency }}</td>
+                </tr>
+                {% endif %}
+            </table>
+            
+            {% if notes %}
+            <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                <h3>ملاحظات:</h3>
+                <p>{{ notes }}</p>
+            </div>
+            {% endif %}
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="tel:{{ contact_phone }}" class="button">📞 اتصل بنا</a>
+                <a href="mailto:{{ contact_email }}" class="button">📧 راسلنا</a>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>ADR ELECTRONICS</strong></p>
+            <p>📍 {{ business_address }}</p>
+            <p>📞 {{ contact_phone }} | 📧 {{ contact_email }}</p>
+            <p>🕒 {{ business_hours }}</p>
+        </div>
+    </div>
+</body>
+</html>
+

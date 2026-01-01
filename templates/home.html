@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#667eea">
+    <title>ADR Electronics - خدمات الصيانة الاحترافية</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/customer.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <h1>🔧 ADR Electronics</h1>
+                <p>خدمات الصيانة الاحترافية</p>
+            </div>
+            <nav class="main-nav">
+                <a href="#features">المميزات</a>
+                <a href="#services">الخدمات</a>
+                <a href="/about">من نحن</a>
+                <a href="#track">تتبع جهازك</a>
+                <a href="#contact">اتصل بنا</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h2>صيانة احترافية لأجهزتك الإلكترونية</h2>
+                <p>نقدم خدمات صيانة شاملة وسريعة لجميع أنواع الأجهزة الإلكترونية</p>
+                <div class="hero-buttons">
+                    <a href="#track" class="btn btn-primary">تتبع جهازك</a>
+                    <a href="/about" class="btn btn-secondary">من نحن</a>
+                    <a href="#contact" class="btn btn-secondary">اتصل بنا</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">مميزاتنا</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>صيانة سريعة</h3>
+                    <p>نضمن إصلاح أجهزتك في أقصر وقت ممكن مع الحفاظ على الجودة العالية</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛠️</div>
+                    <h3>فنيون محترفون</h3>
+                    <p>فريق من الفنيين المدربين والخبراء في صيانة جميع أنواع الأجهزة</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💯</div>
+                    <h3>ضمان الجودة</h3>
+                    <p>نضمن جودة العمل مع ضمان على جميع الإصلاحات</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>متابعة مباشرة</h3>
+                    <p>تابع حالة جهازك في الوقت الفعلي من خلال QR Code خاص بجهازك</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>أسعار منافسة</h3>
+                    <p>أسعار عادلة ومنافسة مع شفافية كاملة في التكاليف</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>أمان وموثوقية</h3>
+                    <p>نضمن أمان بياناتك وأجهزتك مع معاملة احترافية</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <h2 class="section-title">خدماتنا</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">📱</div>
+                    <h3>صيانة الهواتف</h3>
+                    <p>إصلاح جميع أنواع الهواتف الذكية والأجهزة اللوحية</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">💻</div>
+                    <h3>صيانة الحواسيب</h3>
+                    <p>إصلاح أجهزة الكمبيوتر المحمولة والثابتة</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">📺</div>
+                    <h3>صيانة الأجهزة الإلكترونية</h3>
+                    <p>إصلاح التلفزيونات وأجهزة الصوت والكاميرات</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🎮</div>
+                    <h3>صيانة أجهزة الألعاب</h3>
+                    <p>إصلاح أجهزة PlayStation و Xbox وأجهزة الألعاب الأخرى</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Track Device Section -->
+    <section id="track" class="track-section">
+        <div class="container">
+            <h2 class="section-title">تتبع جهازك</h2>
+            <div class="track-content">
+                <div class="track-info">
+                    <h3>كيف تتبع جهازك؟</h3>
+                    <ol class="track-steps">
+                        <li>
+                            <span class="step-number">1</span>
+                            <div class="step-content">
+                                <h4>احصل على QR Code</h4>
+                                <p>عند استلام جهازك، ستحصل على QR Code خاص بجهازك</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="step-number">2</span>
+                            <div class="step-content">
+                                <h4>امسح الكود</h4>
+                                <p>استخدم كاميرا هاتفك لمسح QR Code</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="step-number">3</span>
+                            <div class="step-content">
+                                <h4>تابع حالة جهازك</h4>
+                                <p>ستظهر لك حالة جهازك الحالية مباشرة</p>
+                            </div>
+                        </li>
+                    </ol>
+                    <div class="track-form">
+                        <h3>أو أدخل رقم التتبع مباشرة</h3>
+                        <form action="/track" method="GET">
+                            <input type="text" name="code" placeholder="أدخل رقم التتبع (مثال: A123)" required>
+                            <button type="submit" class="btn btn-primary">تتبع</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="track-visual">
+                    <div class="qr-demo">
+                        <div class="qr-placeholder">📱</div>
+                        <p>QR Code خاص بجهازك</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">اتصل بنا</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <span class="contact-icon">📞</span>
+                        <div>
+                            <h4>الهاتف</h4>
+                            <p>اتصل بنا على: <a href="tel:+9611234567" style="color: white; text-decoration: underline;">+961 1 234 567</a></p>
+                            <p style="margin-top: 5px; font-size: 14px;">أو عبر واتساب</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-icon">📍</span>
+                        <div>
+                            <h4>العنوان</h4>
+                            <p>لبنان - بيروت</p>
+                            <p style="margin-top: 5px; font-size: 14px;">زيارتنا في معرضنا - نحن في خدمتك دائماً</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-icon">⏰</span>
+                        <div>
+                            <h4>ساعات العمل</h4>
+                            <p>من السبت إلى الخميس: 9:00 صباحاً - 7:00 مساءً</p>
+                            <p style="margin-top: 5px; font-size: 14px;">الجمعة: مغلق</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-icon">✉️</span>
+                        <div>
+                            <h4>البريد الإلكتروني</h4>
+                            <p><a href="mailto:info@adrelectronics.com" style="color: white; text-decoration: underline;">info@adrelectronics.com</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 ADR Electronics. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

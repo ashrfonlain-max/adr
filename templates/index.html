@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="ADR الصيانة">
+    <title>نظام إدارة الصيانة - ADR</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192x192.png') }}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='icons/icon-32x32.png') }}">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Chart.js for Reports -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <h1>📱 نظام إدارة الصيانة</h1>
+            <p>ADR ELECTRONICS</p>
+            <div class="header-actions">
+                <button class="logout-btn" onclick="logout()" title="تسجيل الخروج">
+                    🚪 خروج
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-nav">
+        <button class="nav-btn active" data-section="dashboard" type="button">
+            <span class="nav-icon">📊</span>
+            <span class="nav-text">التحكم</span>
+        </button>
+        <button class="nav-btn" data-section="jobs" type="button">
+            <span class="nav-icon">📋</span>
+            <span class="nav-text">الطلبات</span>
+        </button>
+        <button class="nav-btn" data-section="add" type="button">
+            <span class="nav-icon">➕</span>
+            <span class="nav-text">إضافة</span>
+        </button>
+        <button class="nav-btn" data-section="camera" type="button">
+            <span class="nav-icon">📷</span>
+            <span class="nav-text">كاميرا</span>
+        </button>
+        <button class="nav-btn" data-section="reports" type="button">
+            <span class="nav-icon">📊</span>
+            <span class="nav-text">التقارير</span>
+        </button>
+        <button class="nav-btn" data-section="settings" type="button">
+            <span class="nav-icon">⚙️</span>
+            <span class="nav-text">إعدادات</span>
+        </button>
+    </nav>
+
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="section active">
+        <div class="container">
+            <h2>📊 لوحة التحكم</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card clickable" onclick="filterJobsByStatus('')" title="اضغط لعرض جميع الطلبات">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-value" id="total-jobs">0</div>
+                    <div class="stat-label">إجمالي الطلبات</div>
+                </div>
+                
+                <div class="stat-card clickable" onclick="filterJobsByStatus('received')" title="اضغط لعرض الطلبات قيد المعالجة">
+                    <div class="stat-icon">⏳</div>
+                    <div class="stat-value" id="in-progress">0</div>
+                    <div class="stat-label">قيد المعالجة</div>
+                </div>
+                
+                <div class="stat-card clickable" onclick="filterJobsByStatus('repaired')" title="اضغط لعرض الطلبات الجاهزة">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-value" id="ready">0</div>
+                    <div class="stat-label">جاهز للتسليم</div>
+                </div>
+                
+                <div class="stat-card clickable" onclick="filterJobsByStatus('delivered')" title="اضغط لعرض الطلبات المسلمة">
+                    <div class="stat-icon">🎉</div>
+                    <div class="stat-value" id="delivered">0</div>
+                    <div class="stat-label">تم التسليم</div>
+                </div>
+            </div>
+
+            <div class="recent-jobs">
+                <h3>آخر الطلبات</h3>
+                <div id="recent-jobs-list"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Jobs Section -->
+    <section id="jobs" class="section">
+        <div class="container">
+            <h2>📋 جميع الطلبات</h2>
+            
+            <!-- Search -->
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="🔍 ابحث برقم التتبع، اسم العميل، أو رقم الهاتف...">
+                <select id="status-filter">
+                    <option value="">جميع الحالات</option>
+                    <option value="received">تم الاستلام</option>
+                    <option value="repaired">تمت الصيانة</option>
+                    <option value="delivered">تم التسليم</option>
+                </select>
+            </div>
+
+            <!-- Jobs List -->
+            <div id="jobs-list"></div>
+        </div>
+    </section>
+
+    <!-- Add Job Section -->
+    <section id="add" class="section">
+        <div class="container">
+            <h2>➕ إضافة طلب صيانة جديد</h2>
+            
+            <form id="add-job-form">
+                <div class="form-group">
+                    <label>اسم العميل *</label>
+                    <input type="text" id="customer-name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>رقم الهاتف *</label>
+                    <input type="tel" id="phone" required>
+                </div>
+
+                <div class="form-group">
+                    <label>نوع الجهاز *</label>
+                    <input type="text" id="device-type" required>
+                </div>
+
+                <div class="form-group">
+                    <label>موديل الجهاز</label>
+                    <input type="text" id="device-model">
+                </div>
+
+                <div class="form-group">
+                    <label>الرقم التسلسلي</label>
+                    <input type="text" id="serial-number" lang="en" inputmode="verbatim" dir="ltr">
+                </div>
+
+                <div class="form-group">
+                    <label>وصف العطل</label>
+                    <textarea id="issue-description" rows="4" placeholder="وصف العطل (اختياري)"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>التكلفة التقديرية</label>
+                    <div class="cost-input-group">
+                        <input type="number" id="estimated-cost" min="0" step="0.01" placeholder="مثال: 50">
+                        <select id="estimated-cost-currency">
+                            <option value="USD">$ دولار (مفضل)</option>
+                            <option value="LBP">ل.ل ليرة لبنانية</option>
+                        </select>
+                    </div>
+                    <div id="cost-conversion" class="cost-conversion"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>طريقة الدفع المفضلة</label>
+                    <div class="payment-methods">
+                        <label class="payment-option">
+                            <input type="radio" name="payment-method" value="cash" checked>
+                            <span class="payment-label">💵 كاش (مفضل)</span>
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="payment-method" value="wish_money">
+                            <span class="payment-label">💳 Wish Money</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>ملاحظات</label>
+                    <textarea id="notes" rows="3"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">💾 حفظ الطلب</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Camera Section -->
+    <section id="camera" class="section">
+        <div class="container">
+            <h2>📷 كاميرا الهاتف</h2>
+            
+            <div class="camera-controls">
+                <button class="btn btn-primary" onclick="openCamera()">
+                    📷 فتح الكاميرا
+                </button>
+                <button class="btn btn-secondary" onclick="capturePhoto()" id="capture-btn" disabled>
+                    📸 التقاط صورة
+                </button>
+            </div>
+            
+            <div class="camera-preview">
+                <video id="camera-video" autoplay playsinline style="display: none;"></video>
+                <canvas id="camera-canvas" style="display: none;"></canvas>
+                <div id="photo-preview" class="photo-preview"></div>
+            </div>
+            
+            <div class="photo-actions" id="photo-actions" style="display: none;">
+                <button class="btn btn-success" onclick="savePhoto()">
+                    💾 حفظ الصورة
+                </button>
+                <button class="btn btn-danger" onclick="retakePhoto()">
+                    🔄 إعادة التقاط
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reports Section -->
+    <section id="reports" class="section">
+        <div class="container">
+            <h2>📊 التقارير والإحصائيات</h2>
+            
+            <!-- Report Filters -->
+            <div class="report-filters">
+                <div class="filter-group">
+                    <label>نوع التقرير</label>
+                    <select id="report-type">
+                        <option value="daily">يومي</option>
+                        <option value="weekly">أسبوعي</option>
+                        {% if enable_monthly_stats %}
+                        <option value="monthly">شهري</option>
+                        {% endif %}
+                        <option value="yearly">سنوي</option>
+                        <option value="custom">مخصص</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group" id="custom-dates" style="display: none;">
+                    <label>من تاريخ</label>
+                    <input type="date" id="start-date">
+                    <label>إلى تاريخ</label>
+                    <input type="date" id="end-date">
+                </div>
+                
+                <div class="filter-group">
+                    <label>نوع الكود</label>
+                    <select id="report-code-type">
+                        <option value="">جميع الأنواع</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>الحالة</label>
+                    <select id="report-status">
+                        <option value="delivered">تم التسليم</option>
+                        <option value="all">جميع الحالات</option>
+                        <option value="received">تم الاستلام</option>
+                        <option value="repaired">تمت الصيانة</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-primary" onclick="generateReport()">
+                    📊 إنشاء التقرير
+                </button>
+            </div>
+            
+            <!-- Report Results -->
+            <div id="report-results" style="display: none;">
+                <!-- Report Header with Time Info -->
+                <div class="report-header" style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-right: 4px solid #667eea;">
+                    <h3 style="margin: 0 0 10px 0; color: #333;">📊 نتائج التقرير</h3>
+                    <div id="report-time-info" style="color: #666; font-size: 14px;"></div>
+                </div>
+                
+                <!-- Summary Cards -->
+                <div class="report-summary">
+                    <div class="summary-card">
+                        <div class="summary-icon">📝</div>
+                        <div class="summary-value" id="report-total-jobs">0</div>
+                        <div class="summary-label">إجمالي الطلبات</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-icon">💰</div>
+                        <div class="summary-value" id="report-total-revenue">$0</div>
+                        <div class="summary-label">إجمالي الإيرادات</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-icon">✅</div>
+                        <div class="summary-value" id="report-delivered">0</div>
+                        <div class="summary-label">تم التسليم</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-icon">📈</div>
+                        <div class="summary-value" id="report-avg-price">$0</div>
+                        <div class="summary-label">متوسط السعر</div>
+                    </div>
+                </div>
+                
+                <!-- Comparison with Previous Period -->
+                <div id="report-comparison" class="comparison-section" style="display: none;">
+                    <h3>📊 المقارنة مع الفترة السابقة</h3>
+                    <div class="comparison-cards">
+                        <div class="comparison-card">
+                            <div class="comparison-label">الطلبات</div>
+                            <div class="comparison-value" id="comparison-jobs">-</div>
+                        </div>
+                        <div class="comparison-card">
+                            <div class="comparison-label">الإيرادات</div>
+                            <div class="comparison-value" id="comparison-revenue">-</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Charts Section -->
+                <div class="charts-section">
+                    <div class="chart-container">
+                        <h3>📊 الإيرادات حسب نوع الجهاز</h3>
+                        <canvas id="device-chart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3>💳 الإيرادات حسب طريقة الدفع</h3>
+                        <canvas id="payment-chart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Best Customers -->
+                <div class="best-customers-section">
+                    <h3>⭐ أفضل العملاء</h3>
+                    <div class="customers-grid">
+                        <div class="customer-card">
+                            <div class="customer-label">أكثر طلبات</div>
+                            <div class="customer-name" id="best-customer-count">-</div>
+                        </div>
+                        <div class="customer-card">
+                            <div class="customer-label">أعلى إيرادات</div>
+                            <div class="customer-name" id="best-customer-revenue">-</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Jobs Table -->
+                <div class="report-jobs-section">
+                    <h3>📋 تفاصيل الطلبات</h3>
+                    <div class="table-container">
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>كود التتبع</th>
+                                    <th>العميل</th>
+                                    <th>نوع الجهاز</th>
+                                    <th>الحالة</th>
+                                    <th>السعر</th>
+                                    <th>طريقة الدفع</th>
+                                    <th>التاريخ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="report-jobs-table">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Export Buttons -->
+                <div class="export-buttons">
+                    <button class="btn btn-success" onclick="exportReport('pdf')">
+                        📄 تصدير PDF
+                    </button>
+                    <button class="btn btn-primary" onclick="exportReport('excel')">
+                        📊 تصدير Excel
+                    </button>
+                    <button class="btn btn-secondary" onclick="printReport()">
+                        🖨️ طباعة
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Settings Section -->
+    <section id="settings" class="section">
+        <div class="container">
+            <h2>⚙️ إعدادات النظام</h2>
+            
+            <div class="settings-group">
+                <h3>📱 رسالة الواتساب المخصصة</h3>
+                <div class="form-group">
+                    <label>قالب الرسالة</label>
+                    <textarea id="whatsapp-template" rows="8" placeholder="أدخل قالب الرسالة..."></textarea>
+                    <div class="template-help">
+                        <p><strong>متغيرات متاحة:</strong></p>
+                        <ul>
+                            <li><code>{tracking_code}</code> - رقم التتبع</li>
+                            <li><code>{customer_name}</code> - اسم العميل</li>
+                            <li><code>{device_type}</code> - نوع الجهاز</li>
+                            <li><code>{device_model}</code> - موديل الجهاز</li>
+                            <li><code>{serial_number}</code> - الرقم التسلسلي</li>
+                            <li><code>{status}</code> - الحالة الجديدة</li>
+                            <li><code>{price_info}</code> - معلومات السعر</li>
+                            <li><code>{date}</code> - تاريخ التحديث</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" onclick="saveWhatsAppTemplate()">
+                    💾 حفظ القالب
+                </button>
+            </div>
+            
+            <div class="settings-group">
+                <h3>💱 إعدادات العملة</h3>
+                <div class="currency-info">
+                    <p><strong>العملة الافتراضية:</strong> الدولار الأمريكي ($)</p>
+                    <p><strong>سعر الصرف الحالي:</strong> 1 دولار = <span id="exchange-rate">90000</span> ليرة لبنانية</p>
+                    <p><strong>ملاحظة:</strong> جميع التكاليف تحفظ بالدولار في قاعدة البيانات</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Job Details Modal -->
+    <div id="job-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="job-details"></div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loading" class="loading hidden">
+        <div class="spinner"></div>
+    </div>
+
+    <script>
+        window.ENABLE_MONTHLY_STATS = {{ 'true' if enable_monthly_stats else 'false' }};
+    </script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    
+    <!-- تسجيل Service Worker لـ PWA -->
+    <script>
+        // تسجيل Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('{{ url_for("static", filename="sw.js") }}')
+                    .then(registration => {
+                        console.log('✅ Service Worker مسجل بنجاح:', registration.scope);
+                        
+                        // التحقق من التحديثات
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // هناك تحديث جديد متاح
+                                    if (confirm('تحديث جديد متاح! هل تريد تحديث التطبيق؟')) {
+                                        newWorker.postMessage({ type: 'SKIP_WAITING' });
+                                        window.location.reload();
+                                    }
+                                }
+                            });
+                        });
+                    })
+                    .catch(error => {
+                        console.error('❌ فشل تسجيل Service Worker:', error);
+                    });
+            });
+        }
+        
+        // إظهار رسالة تثبيت PWA
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // إظهار زر التثبيت
+            const installButton = document.createElement('button');
+            installButton.textContent = '📱 تثبيت التطبيق على الهاتف';
+            installButton.className = 'btn btn-primary';
+            installButton.style.cssText = 'position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); z-index: 1000; padding: 15px 30px; font-size: 16px; border-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);';
+            installButton.onclick = () => {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('✅ تم قبول تثبيت التطبيق');
+                    }
+                    deferredPrompt = null;
+                    installButton.remove();
+                });
+            };
+            document.body.appendChild(installButton);
+        });
+    </script>
+</body>
+</html>
+
