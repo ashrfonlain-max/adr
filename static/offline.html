@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>غير متصل - ADR الصيانة</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            direction: rtl;
+        }
+        
+        .offline-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .offline-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+        
+        .offline-title {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        
+        .offline-message {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        
+        .retry-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .retry-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .features {
+            margin-top: 30px;
+            text-align: right;
+        }
+        
+        .feature {
+            margin: 10px 0;
+            color: #555;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-icon">📱</div>
+        <h1 class="offline-title">غير متصل بالإنترنت</h1>
+        <p class="offline-message">
+            لا يمكن الوصول للخادم حالياً.<br>
+            تحقق من اتصال الإنترنت وأعد المحاولة.
+        </p>
+        
+        <button class="retry-btn" onclick="window.location.reload()">
+            🔄 إعادة المحاولة
+        </button>
+        
+        <div class="features">
+            <h3>الميزات المتاحة بدون إنترنت:</h3>
+            <div class="feature">📊 عرض البيانات المحفوظة</div>
+            <div class="feature">📷 استخدام الكاميرا</div>
+            <div class="feature">📝 إضافة طلبات جديدة (سيتم حفظها عند الاتصال)</div>
+        </div>
+    </div>
+    
+    <script>
+        // محاولة إعادة الاتصال كل 30 ثانية
+        setInterval(() => {
+            fetch('/api/stats')
+                .then(response => {
+                    if (response.ok) {
+                        window.location.reload();
+                    }
+                })
+                .catch(() => {
+                    // لا يزال غير متصل
+                });
+        }, 30000);
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
